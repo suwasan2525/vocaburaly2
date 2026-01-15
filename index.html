@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Vocabulary Trainer Unit 1–3</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#74ebd5,#9face6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+.card {
+  background:#fff;
+  width:420px;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  text-align:center;
+}
+.word {
+  font-size:26px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.meaning {
+  font-size:20px;
+  color:#444;
+  margin:15px 0;
+  display:none;
+}
+.buttons button {
+  padding:10px 18px;
+  margin:6px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+.know {background:#4CAF50;color:#fff;}
+.dont {background:#F44336;color:#fff;}
+.back {background:#607D8B;color:#fff;}
+.score {
+  margin-top:15px;
+  font-size:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="word" id="word"></div>
+  <div class="meaning" id="meaning"></div>
+
+  <div class="buttons">
+    <button class="know" onclick="know()">รู้</button>
+    <button class="dont" onclick="dontKnow()">ไม่รู้</button>
+    <button class="back" onclick="goBack()">ย้อนกลับ</button>
+  </div>
+
+  <div class="score">
+    ข้อที่ <span id="index"></span> / <span id="total"></span><br>
+    รู้: <span id="knowScore">0</span> |
+    ไม่รู้: <span id="dontScore">0</span>
+  </div>
+</div>
+
+<script>
+const vocab = [
+  // Unit 1
+  ["Advertised job / advertisement / ads / adverts","ประกาศงาน"],
+  ["Application","ใบสมัครงาน"],
+  ["Apply in person","สมัครด้วยตนเอง"],
+  ["Available","ว่าง"],
+  ["Beneficial","เป็นประโยชน์"],
+  ["Benefits","ผลประโยชน์"],
+  ["Candidate","ผู้สมัคร"],
+  ["Career opportunities / job opportunities","ตำแหน่งงาน"],
+  ["Commission","เงินรางวัล"],
+  ["Competitive salary","รายได้สูง"],
+  ["Employee","ลูกจ้าง"],
+  ["Employer","นายจ้าง"],
+  ["Employment","การจ้างงาน"],
+  ["Finance","การเงิน"],
+  ["Flexible","ยืดหยุ่น"],
+  ["Good relations","ความสัมพันธ์ที่ดี"],
+  ["Graduate","เรียนจบ"],
+  ["Highly motivated","มีแรงจูงใจสูง"],
+  ["Independently","อย่างอิสระ"],
+  ["Insurance","ประกันภัย"],
+  ["Job seeker","ผู้หางาน"],
+  ["Manner","มารยาท"],
+  ["Permanent","ถาวร"],
+  ["Preferable","ชอบมากกว่า"],
+  ["Photography","การถ่ายภาพ"],
+  ["Qualification","คุณสมบัติ"],
+  ["Recruitment process","การหาบุคคลทำงาน"],
+  ["Requirement","ความต้องการ"],
+  ["Responsibility","ความรับผิดชอบ"],
+  ["Specification","ข้อกำหนด"],
+  ["Temporary","ชั่วคราว"],
+  ["Urgently","อย่างเร่งด่วน"],
+  ["Vacancy","ตำแหน่ง"],
+  ["Vital","สำคัญ"],
+
+  // Unit 2
+  ["Ability","ความสามารถ"],
+  ["Achievement","ความสำเร็จ"],
+  ["Ambitious","ทะเยอทะยาน"],
+  ["Analytical","วิเคราะห์"],
+  ["Attentively","อย่างตั้งใจ"],
+  ["Communication skills","ทักษะการสื่อสาร"],
+  ["Decisive","ตัดสินใจได้"],
+  ["Enthusiastic","กระตือรือร้น"],
+  ["Extracurricular activities","กิจกรรมนอกหลักสูตร"],
+  ["Flexibility","ความยืดหยุ่น"],
+  ["Formulate","กำหนดกฎ"],
+  ["Have a go (at)","พยายามทำ"],
+  ["Human relation","มนุษยสัมพันธ์"],
+  ["Impressive","น่าประทับใจ"],
+  ["Inactive","ไม่ได้ใช้งาน"],
+  ["Internship","การฝึกงาน"],
+  ["Interpersonal","ความสัมพันธ์ระหว่างบุคคล"],
+  ["Job objective statement","จุดมุ่งหมายในการทำงาน"],
+  ["Leadership","ภาวะผู้นำ"],
+  ["Negotiation skills","ทักษะการเจรจาต่อรอง"],
+  ["Overcome","ฟันฝ่า"],
+  ["Persuasive","ชวนเชื่อ"],
+  ["References","อ้างอิง"],
+  ["Response","คำตอบ"],
+  ["Responsible","มีความรับผิดชอบ"],
+  ["Scholarship","ทุน"],
+  ["Skilled worker","ช่างฝีมือ"],
+  ["Strengths","จุดแข็ง"],
+  ["Survival","การอยู่รอด"],
+  ["Team working","การทำงานเป็นทีม"],
+  ["Trainee","เด็กฝึกงาน"],
+  ["Transferable skills","ทักษะที่ใช้ในการทำงาน"],
+
+  // Unit 3
+  ["Accomplishment","ความสำเร็จ"],
+  ["Ambitious","ทะเยอทะยาน"],
+  ["Analytical skills","ทักษะการวิเคราะห์"],
+  ["Application form","ใบสมัคร"],
+  ["Background","พื้นเพ"],
+  ["Beforehand","ล่วงหน้า"],
+  ["Body language","ภาษากาย"],
+  ["Candidate","ผู้สมัคร"],
+  ["Certify","รับรอง"],
+  ["Concise","กระชับ ชัดเจน"],
+  ["Deal with","จัดการกับ"],
+  ["Desperate","หมดหวัง"],
+  ["Disqualify","ตัดสิทธิ์"],
+  ["Education plan","แผนการเรียน"],
+  ["Free time / Spare time","เวลาว่าง"],
+  ["Get the sack","เลิกจ้าง"],
+  ["Honest","ซื่อสัตย์"],
+  ["Human resources (HR)","ฝ่ายบุคลากร"],
+  ["Interviewee / Interviewer","ผู้ถูกสัมภาษณ์ / ผู้สัมภาษณ์"],
+  ["Military status","สถานะการเป็นทหาร"],
+  ["Optimism","มองโลกแง่ดี"],
+  ["Prioritize","จัดลำดับความสำคัญ"],
+  ["Professional development","การพัฒนาวิชาชีพ"],
+  ["Relocate","ย้ายถิ่นฐาน"],
+  ["Terminate","ยกเลิก เลิกจ้าง"],
+  ["Training course","การอบรม"],
+  ["Truthful","ซื่อสัตย์"],
+  ["Weakness","จุดอ่อน"],
+  ["Well-established reputation","มีชื่อเสียงเป็นที่ยอมรับ"],
+  ["Well-prepared","การเตรียมตัวที่ดี"],
+  ["Workplace ethics","จริยธรรมที่ทำงาน"],
+  ["Worry about","กังวลเกี่ยวกับ"]
+];
+
+let order = [...Array(vocab.length).keys()].sort(()=>Math.random()-0.5);
+let current = 0;
+let knowScore = 0;
+let dontScore = 0;
+let history = [];
+
+const wordEl = document.getElementById("word");
+const meaningEl = document.getElementById("meaning");
+
+document.getElementById("total").textContent = vocab.length;
+
+function showWord() {
+  const idx = order[current];
+  wordEl.textContent = vocab[idx][0];
+  meaningEl.textContent = vocab[idx][1];
+  meaningEl.style.display = "none";
+  document.getElementById("index").textContent = current+1;
+}
+
+function know() {
+  history.push("know");
+  knowScore++;
+  current++;
+  updateScore();
+}
+
+function dontKnow() {
+  history.push("dont");
+  dontScore++;
+  meaningEl.style.display = "block";
+  updateScore();
+}
+
+function goBack() {
+  if(current===0) return;
+  current--;
+  const last = history.pop();
+  if(last==="know") knowScore--;
+  if(last==="dont") dontScore--;
+  updateScore();
+}
+
+function updateScore() {
+  document.getElementById("knowScore").textContent = knowScore;
+  document.getElementById("dontScore").textContent = dontScore;
+  if(current < vocab.length) showWord();
+}
+
+showWord();
+</script>
+
+</body>
+</html>
